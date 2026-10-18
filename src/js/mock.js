@@ -137,7 +137,7 @@
   };
 
   document.addEventListener('DOMContentLoaded', () => {
-    document.documentElement.style.background = params.get('bg') || '#dcdbe3';
+    document.documentElement.style.background = params.get('bg') || '#efe2dc';
     applyFrame();
     document.addEventListener('mousemove', (event) => open && !document.getElementById('portal').hidden && window.mock.drag(point(event).x, point(event).y));
     document.addEventListener('click', (event) => {
@@ -161,7 +161,15 @@
       return [(260 + 154 * Math.cos(a)) * d, (260 + 154 * Math.sin(a)) * d];
     };
     document.body.style.outline = 'none';
-    if (demo === 'hint') return window.mock.hint();
+    // Headless Edge paints almost no frames, and CSS transitions only move on
+    // painted frames: a card could be caught half grown. Jump straight to
+    // each state instead.
+    document.head.append(h('style', {}, '*, *::before, *::after { transition: none !important; }'));
+    if (demo === 'hint') {
+      window.mock.hint();
+      // No keyboard focus ring on "Got it" in a picture.
+      return sleep(1200).then(() => document.activeElement && document.activeElement.blur());
+    }
     summon();
     await sleep(300);
     window.mock.drag(260 * d, 260 * d);

@@ -3,7 +3,7 @@
    ============================================================================
    Look: bold condensed capitals (Oswald), small mono text (DM Mono), chunky
    rounded shapes, pill chips and buttons, one strong colour block per card.
-   Colour: five ocean blues, from the deep sea to the foam.
+   Colour: six shades from night purple through plum and mauve to cream.
 
    The window is transparent: only what's drawn here is visible. The portal
    floats over whatever you have open (often a white File Explorer), so it
@@ -39,27 +39,29 @@
 :root {
   color-scheme: dark;
 
-  /* The palette */
-  --abyss: #001a2a;
-  --deep: #013c73;
-  --sea: #4299cb;
-  --sky: #95c6e8;
-  --foam: #d2ecff;
+  /* The palette, darkest to lightest */
+  --night: #190019;
+  --violet: #2b124c;
+  --plum: #522b5b;
+  --mauve: #854f6c;
+  --rose: #dfb6b2;
+  --cream: #fbe4d8;
 
-  /* Surfaces, darkest to lightest (all mixed from the palette) */
-  --base: #001a2a;             /* card, disk, backing */
-  --raised: #062a42;           /* slots, inputs, chips */
-  --raised-2: #0b3757;         /* hover, secondary buttons */
-  --line: rgba(210, 236, 255, 0.08);
-  --line-strong: rgba(210, 236, 255, 0.14);
+  /* Surfaces */
+  --base: var(--night);        /* card, disk, backing */
+  --raised: var(--violet);     /* slots, inputs */
+  --raised-2: #3b1b61;         /* hover, secondary buttons (a lighter violet) */
+  --line: rgba(251, 228, 216, 0.08);
+  --line-strong: rgba(251, 228, 216, 0.14);
 
-  /* Text on --base */
-  --text: #eef7ff;
-  --text-dim: var(--sky);      /* 10:1 */
-  --text-faint: #6e9dc0;       /* 6:1 on --base, 5:1 on --raised */
-  --ink: var(--abyss);         /* text ON foam, sky or sea */
+  /* Text. Contrast measured on --base and on --raised. */
+  --text: #fff4ee;
+  --text-dim: var(--rose);     /* 10.9:1 on base, 8.9:1 on raised */
+  --text-faint: #a8899a;       /* 6.4:1 on base, 5.2:1 on raised */
+  --ink: var(--night);         /* text ON cream, rose or coral (16:1 on cream) */
+  /* Cream text on the plum chips (9.3:1) and the mauve panel (5.2:1). */
 
-  /* Problems get the one warm colour */
+  /* Problems get the one hot colour */
   --coral: #ff8a7a;
 
   --display: "Oswald", "Bahnschrift", "Segoe UI", sans-serif;
@@ -120,8 +122,8 @@ body {
   position: absolute;
   inset: 8px;
   border-radius: 50%;
-  background: rgba(0, 26, 42, 0.97);
-  box-shadow: 0 0 0 1px var(--line-strong), 0 12px 28px rgba(0, 8, 16, 0.5);
+  background: rgba(25, 0, 25, 0.97);
+  box-shadow: 0 0 0 1px var(--line-strong), 0 12px 28px rgba(12, 0, 14, 0.5);
 }
 
 .ring {
@@ -138,7 +140,7 @@ body {
 }
 .rim circle {
   fill: none;
-  stroke: var(--sea);
+  stroke: var(--mauve);
   stroke-opacity: 0.55;
   stroke-width: 2.2;
   stroke-dasharray: 0.01 9;
@@ -163,7 +165,7 @@ body {
 .pointer.on { opacity: 1; }
 .pointer path {
   fill: none;
-  stroke: var(--foam);
+  stroke: var(--cream);
   stroke-width: 4;
   stroke-linecap: round;
 }
@@ -184,7 +186,7 @@ body {
 }
 .slot-icon {
   fill: none;
-  stroke: var(--sky);
+  stroke: var(--rose);
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -199,11 +201,11 @@ body {
 }
 
 .slot.hot { transform: translate(var(--dx), var(--dy)); }
-.slot.hot .slot-bg { fill: var(--foam); stroke: var(--foam); }
+.slot.hot .slot-bg { fill: var(--cream); stroke: var(--cream); }
 .slot.hot .slot-icon { stroke: var(--ink); }
 .slot.hot .slot-label { fill: var(--ink); }
 
-.slot.ghost .slot-bg { fill: rgba(210, 236, 255, 0.04); stroke: rgba(210, 236, 255, 0.04); }
+.slot.ghost .slot-bg { fill: rgba(251, 228, 216, 0.04); stroke: rgba(251, 228, 216, 0.04); }
 .slot.muted { opacity: 0.3; }
 
 /* The disk in the middle: what a drop would do. */
@@ -219,7 +221,7 @@ body {
   box-shadow: inset 0 0 0 1px var(--line-strong);
   transition: box-shadow 0.25s var(--ease-out);
 }
-.disk.lit { box-shadow: inset 0 0 0 2px var(--foam); }
+.disk.lit { box-shadow: inset 0 0 0 2px var(--cream); }
 
 /* One state of the disk. States swap with a short slide (app.js). */
 .disk-face {
@@ -256,8 +258,8 @@ body {
   height: 14px;
   margin-bottom: 6px;
   border-radius: 50%;
-  background: var(--sea);
-  box-shadow: 0 0 0 0 rgba(66, 153, 203, 0.5);
+  background: var(--mauve);
+  box-shadow: 0 0 0 0 rgba(133, 79, 108, 0.5);
   animation: pulse 1.6s var(--ease-out) infinite;
 }
 .disk-face .icon-badge { margin-bottom: 2px; }
@@ -271,8 +273,8 @@ body {
   box-sizing: border-box;
   padding: 4px 10px;
   border-radius: 999px;
-  background: var(--deep);
-  color: var(--foam);
+  background: var(--plum);
+  color: var(--cream);
   font: 500 11px/1.3 var(--mono);
   white-space: nowrap;
 }
@@ -286,8 +288,8 @@ body {
   border-radius: 13px;
   display: grid;
   place-items: center;
-  background: var(--deep);
-  color: var(--foam);
+  background: var(--plum);
+  color: var(--cream);
 }
 .icon-badge.coral { background: var(--coral); color: var(--ink); }
 .icon-badge .icon { width: 20px; height: 20px; }
@@ -329,7 +331,7 @@ body {
   overflow: hidden;
   border-radius: 28px;
   background: var(--base);
-  box-shadow: 0 0 0 1px var(--line-strong), 0 8px 18px rgba(0, 8, 16, 0.5);
+  box-shadow: 0 0 0 1px var(--line-strong), 0 8px 18px rgba(12, 0, 14, 0.5);
   transition: height 0.38s var(--ease-out);
 }
 .card.morphing {
@@ -396,7 +398,7 @@ body {
 }
 .round-btn:hover { background: var(--raised-2); color: var(--text); }
 .round-btn:active { scale: 0.92; }
-.round-btn.foam { background: var(--foam); color: var(--ink); }
+.round-btn.foam { background: var(--cream); color: var(--ink); }
 
 .card-body {
   display: flex;
@@ -405,18 +407,18 @@ body {
   padding: 0 18px 18px;
 }
 
-/* The one colour block of a card: a big number or headline on sea blue
-   (or coral for a problem). */
+/* The one colour block of a card: a big number or headline on mauve
+   (plum for a quiet note, coral for a problem). */
 .panel {
   position: relative;
   overflow: hidden;
   border-radius: 22px;
   padding: 16px 18px 18px;
-  background: var(--sea);
-  color: var(--ink);
+  background: var(--mauve);
+  color: var(--cream);
 }
-.panel.coral { background: var(--coral); }
-.panel.deep { background: var(--deep); color: var(--foam); }
+.panel.coral { background: var(--coral); color: var(--ink); }
+.panel.deep { background: var(--plum); }
 .panel-big { display: block; font-size: 58px; line-height: 0.92; font-variant-numeric: tabular-nums; }
 .panel-head { display: block; font-size: 26px; }
 .panel-note { display: block; margin-top: 8px; font: 500 12px/1.45 var(--mono); }
@@ -429,8 +431,8 @@ body {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: var(--abyss);
-  color: var(--foam);
+  background: var(--night);
+  color: var(--cream);
 }
 .panel .check .icon { width: 20px; height: 20px; stroke-width: 2.4; }
 /* The tick draws itself (dash properties inherit into the icon's <use>). */
@@ -464,8 +466,8 @@ body {
   height: 100%;
   border-radius: 999px;
   background:
-    repeating-linear-gradient(-45deg, rgba(210, 236, 255, 0.28) 0 6px, transparent 6px 12px) 0 0 / 17px 17px,
-    var(--sea);
+    repeating-linear-gradient(-45deg, rgba(251, 228, 216, 0.28) 0 6px, transparent 6px 12px) 0 0 / 17px 17px,
+    var(--mauve);
   animation: stripes 0.9s linear infinite;
   transition: width 0.6s var(--ease-out);
 }
@@ -488,7 +490,7 @@ body {
   transition: background 0.18s;
 }
 .result:hover { background: var(--raised-2); }
-.result > .icon { color: var(--sky); }
+.result > .icon { color: var(--rose); }
 .result-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .result-more { color: var(--text-dim); }
 .result .round-btn { width: 34px; height: 34px; }
@@ -515,8 +517,8 @@ body {
 }
 .btn:active { scale: 0.97; }
 .btn .icon { width: 16px; height: 16px; }
-.btn.primary { background: var(--foam); color: var(--ink); }
-.btn.primary:hover { background: #ffffff; }
+.btn.primary { background: var(--cream); color: var(--ink); }
+.btn.primary:hover { background: #fff6f1; }
 .btn.secondary { background: var(--raised); color: var(--text); }
 .btn.secondary:hover { background: var(--raised-2); }
 
@@ -524,7 +526,7 @@ body {
 .round-btn:focus-visible,
 .result:focus-visible,
 .eye:focus-visible {
-  outline: 2px solid var(--foam);
+  outline: 2px solid var(--cream);
   outline-offset: 3px;
 }
 
@@ -551,7 +553,7 @@ body {
   user-select: text;
   transition: border-color 0.18s, background 0.18s;
 }
-.text:focus { border-color: var(--sea); background: var(--raised-2); }
+.text:focus { border-color: var(--rose); background: var(--raised-2); }
 .text:disabled { opacity: 0.4; }
 .text::placeholder { color: var(--text-faint); }
 
@@ -571,7 +573,7 @@ body {
   color: var(--text-faint);
   cursor: pointer;
 }
-.eye:hover, .eye.on { color: var(--ink); background: var(--sky); }
+.eye:hover, .eye.on { color: var(--ink); background: var(--rose); }
 
 .segmented {
   display: grid;
@@ -594,8 +596,8 @@ body {
   color: var(--text-dim);
   transition: background 0.25s var(--ease-out), color 0.25s;
 }
-.segmented input:checked + span { background: var(--foam); color: var(--ink); }
-.segmented input:focus-visible + span { outline: 2px solid var(--foam); outline-offset: 2px; }
+.segmented input:checked + span { background: var(--cream); color: var(--ink); }
+.segmented input:focus-visible + span { outline: 2px solid var(--cream); outline-offset: 2px; }
 
 .form-error { margin: -2px 0 0; color: var(--coral); }
 .form-error:empty { display: none; }
@@ -606,7 +608,7 @@ body {
   height: 150px;
   margin: 10px 10px 0;
   border-radius: 22px;
-  background: var(--deep);
+  background: var(--violet);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -616,7 +618,7 @@ body {
   height: 104px;
   border-radius: 50%;
   /* Eight slots, the top-right one lit: the portal in miniature. */
-  background: conic-gradient(from 22.5deg, var(--foam) 0 45deg, var(--sea) 45deg 360deg);
+  background: conic-gradient(from 22.5deg, var(--cream) 0 45deg, var(--mauve) 45deg 360deg);
   -webkit-mask:
     radial-gradient(circle, transparent 30px, #000 31px 51px, transparent 52px),
     repeating-conic-gradient(from 19deg, #000 0 39deg, transparent 39deg 45deg);
@@ -633,9 +635,9 @@ body {
   border-radius: 9px;
   display: grid;
   place-items: center;
-  background: var(--foam);
+  background: var(--cream);
   color: var(--ink);
-  box-shadow: 0 6px 14px rgba(0, 8, 16, 0.45);
+  box-shadow: 0 6px 14px rgba(12, 0, 14, 0.45);
   animation: hint-file 3.4s var(--ease-out) infinite;
 }
 .hint-file .icon { width: 18px; height: 18px; }
@@ -650,8 +652,8 @@ body {
 @keyframes spin { to { rotate: 360deg; } }
 @keyframes rim-in { from { rotate: -120deg; opacity: 0; } }
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(66, 153, 203, 0.55); }
-  100% { box-shadow: 0 0 0 16px rgba(66, 153, 203, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(133, 79, 108, 0.55); }
+  100% { box-shadow: 0 0 0 16px rgba(133, 79, 108, 0); }
 }
 @keyframes bloom { from { scale: 0.55; opacity: 0; } }
 @keyframes slot-in { from { scale: 0.72; rotate: -14deg; opacity: 0; } }
