@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "What a portal window's page may do: call PDFportal's own commands, listen to events (including file drops), and let you drag the result card by its header. No file system, shell or HTTP access from the page.",
+  "windows": ["portal-*"],
+  "permissions": ["core:default", "core:window:allow-start-dragging"]
+}

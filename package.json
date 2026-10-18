@@ -1,0 +1,21 @@
+{
+  "name": "pdfportal",
+  "productName": "PDFportal",
+  "version": "0.1.0",
+  "description": "Drag a file, shake it, drop it on a tool. Free, offline, open-source PDF tools for Windows.",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "author": "Shivansh Sharma",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "test": "cd engine && .venv\\Scripts\\python -m pytest -q",
+    "fonts": "node scripts/copy-fonts.js",
+    "icon": "engine\\.venv\\Scripts\\python scripts\\make_icon.py && tauri icon src-tauri/icons/icon-source.png -o src-tauri/icons"
+  },
+  "devDependencies": {
+    "@fontsource-variable/oswald": "^5.3.0",
+    "@fontsource/dm-mono": "^5.3.0",
+    "@tauri-apps/cli": "^2.12.3"
+  }
+}

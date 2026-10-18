@@ -1,0 +1,5 @@
+# One line-ending style in the repo, whatever each contributor's git does locally.
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.woff2 binary

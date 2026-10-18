@@ -1,0 +1,54 @@
+# PDFportal: the desktop app (Tauri 2 + Rust)
+#
+# Rust watches the mouse for a "drag + shake", shows the portal window under
+# the cursor, and runs PDF jobs in the Python engine (../engine). The UI is
+# a plain web page in ../src, drawn by the WebView2 built into Windows 11.
+
+[package]
+name = "pdfportal"
+version = "0.1.0"
+description = "PDFportal: drag a file, shake it, drop it on a tool. Free offline PDF tools."
+authors = ["Shivansh Sharma"]
+license = "AGPL-3.0-or-later"
+edition = "2021"
+rust-version = "1.80"
+
+[lib]
+# Tauri convention: the app lives in a library; main.rs only calls run().
+name = "pdfportal_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-opener = "2"            # open results, show them in File Explorer
+tauri-plugin-single-instance = "2"   # a second launch just exits
+tauri-plugin-autostart = "2"         # "Start with Windows" in the tray menu
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+windows-core = "0.58"                # needed by #[implement] (our drop target)
+
+[dependencies.windows]
+version = "0.58"
+features = [
+  "implement",                       # write a COM object in Rust (IDropTarget)
+  "Win32_Foundation",
+  "Win32_Graphics_Gdi",              # monitors and their work areas
+  "Win32_System_Com",
+  "Win32_System_Com_StructuredStorage",
+  "Win32_System_LibraryLoader",      # our module handle, for the drop surface's window class
+  "Win32_System_Ole",                # drag and drop
+  "Win32_System_SystemServices",
+  "Win32_UI_HiDpi",                  # each monitor's scale (125%, 150%…)
+  "Win32_UI_Shell",                  # the dropped files' paths
+  "Win32_UI_WindowsAndMessaging",    # the mouse hook, window placement
+]
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
