@@ -10,6 +10,7 @@
     "dev": "tauri dev",
     "build": "tauri build",
     "test": "cd engine && .venv\\Scripts\\python -m pytest -q",
+    "installer": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\build-installer.ps1",
     "fonts": "node scripts/copy-fonts.js",
     "icon": "engine\\.venv\\Scripts\\python scripts\\make_icon.py && tauri icon src-tauri/icons/icon-source.png -o src-tauri/icons"
   },

@@ -7,6 +7,8 @@
     brand.html?view=steps    "Drag. Shake. Drop." in three cards (1200 × 360)
     brand.html?view=tools    the ten tools as tiles (1200 × 400)
     brand.html?view=flow     how a drop becomes a file, in five cards (1200 × 176)
+    brand.html?view=sidebar  the installer's welcome/finish picture (164 × 314)
+    brand.html?view=header   the installer's page header (150 × 57)
 
   scripts/screenshots.ps1 renders them to PNGs in this folder. Open the page
   through a local server (it reads ../../src/index.html for the icons).
@@ -136,6 +138,26 @@
     .node.lit p { color: var(--cream); }
     .arrow { flex: none; width: 34px; display: grid; place-items: center; color: var(--mauve); }
     .arrow .icon { width: 26px; height: 26px; stroke-width: 2.2; }
+
+    /* ── Installer (NSIS) pictures: exact pixel sizes, no rounding ─────── */
+    .nsis {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(133, 79, 108, 0.45), rgba(133, 79, 108, 0) 62%),
+        var(--night);
+    }
+    .nsis.side { align-items: center; padding: 34px 14px 18px; gap: 4px; text-align: center; }
+    .nsis.side img { width: 92px; height: 92px; margin-bottom: 14px; }
+    .nsis.side .word { font-size: 31px; }
+    .nsis.side .tag { font-size: 12.5px; letter-spacing: 0.08em; margin-top: 6px; }
+    .nsis.side .fine { margin-top: auto; font-size: 10px; line-height: 1.6; color: var(--rose); }
+    .nsis.head { flex-direction: row; align-items: center; gap: 8px; padding: 0 10px; background: var(--night); }
+    .nsis.head img { width: 32px; height: 32px; }
+    .nsis.head .word { font-size: 20px; }
   </style>
 </head>
 <body>
@@ -261,7 +283,19 @@
       document.body.style.height = '176px';
     }
 
-    const views = { steps, tools, flow };
+    function installer(kind) {
+      const side = kind === 'sidebar';
+      const logo = h('img', { src: '../../src-tauri/icons/128x128@2x.png', alt: '' });
+      const word = h('div', { class: 'word caps' }, 'PDF', h('em', {}, 'portal'));
+      document.body.append(side
+        ? h('div', { class: 'nsis side' }, logo, word, h('div', { class: 'tag caps' }, 'Drag. Shake. Drop.'),
+            h('div', { class: 'fine' }, 'Free · offline', h('br'), 'open source'))
+        : h('div', { class: 'nsis head' }, logo, word));
+      document.body.style.width = side ? '164px' : '150px';
+      document.body.style.height = side ? '314px' : '57px';
+    }
+
+    const views = { steps, tools, flow, sidebar: () => installer('sidebar'), header: () => installer('header') };
     loadIcons().then(() => (views[view] ? views[view]() : hero(view)));
   </script>
 </body>

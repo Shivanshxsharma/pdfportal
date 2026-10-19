@@ -10,6 +10,10 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/Shivanshxsharma/pdfportal/releases/latest/download/PDFportal-Setup.exe"><img alt="Download PDFportal for Windows" src="https://img.shields.io/badge/download_for_windows-PDFportal--Setup.exe-fbe4d8?style=for-the-badge&labelColor=854f6c"></a>
+</p>
+
+<p align="center">
   <a href="#how-it-works"><b>How it works</b></a> &nbsp;·&nbsp;
   <a href="#the-tools"><b>The tools</b></a> &nbsp;·&nbsp;
   <a href="#install"><b>Install</b></a> &nbsp;·&nbsp;
@@ -86,15 +90,26 @@ AES-256. **Unlock** removes a password or a PDF's restrictions.
 
 ## Install
 
-> [!NOTE]
-> Version 0.1 doesn't have an installer yet. You can
-> [build it from source](#build-from-source) in a few minutes; an installer
-> is next on the [roadmap](#roadmap). The app isn't code-signed yet, so
-> Windows may warn you the first time you open it.
+1. Download **[PDFportal-Setup.exe](https://github.com/Shivanshxsharma/pdfportal/releases/latest/download/PDFportal-Setup.exe)**
+   (23.5 MB) from the [latest release](https://github.com/Shivanshxsharma/pdfportal/releases/latest).
+2. Run it. It needs no admin rights: it installs just for you and adds
+   PDFportal to the Start menu.
+3. PDFportal starts in the tray, next to the clock, and shows you how it works.
 
-Once it's running, PDFportal lives in the tray, next to the clock. There's
-no main window. Right-click the tray icon for **How to use PDFportal**,
-**Pause the shake gesture**, **Start with Windows** and **Quit**.
+Everything it needs is inside the installer, Python and the PDF engine
+included; there's nothing else to install. It runs on Windows 10 and 11
+(64-bit).
+
+> [!NOTE]
+> PDFportal isn't code-signed yet, so Windows may say *"Windows protected
+> your PC"* the first time. Click **More info**, then **Run anyway**. Each
+> release lists the installer's SHA-256 checksum, so you can check your
+> download is the real one: `Get-FileHash PDFportal-Setup.exe` in PowerShell.
+
+There's no main window. Right-click the tray icon for **How to use
+PDFportal**, **Pause the shake gesture**, **Start with Windows** and
+**Quit**. To uninstall, open **Settings → Apps → Installed apps →
+PDFportal → Uninstall**.
 
 ### Build from source
 
@@ -117,6 +132,8 @@ src-tauri\target\release\pdfportal.exe
 ```
 
 For development, `npx tauri dev` runs it with a console for the logs.
+`npm run installer` builds the installer itself: it freezes the engine,
+tests the frozen copy, and writes `PDFportal-Setup.exe` with its SHA-256.
 
 <br>
 
@@ -148,7 +165,7 @@ comments explain why.
 ## Roadmap
 
 - [x] Ten everyday tools: compress, merge, split, rotate, to JPG, numbers, watermark, protect, unlock, to PDF
-- [ ] An installer with the engine built in, and releases here on GitHub
+- [x] An installer with the engine built in, and releases here on GitHub
 - [ ] OCR, so scanned PDFs become searchable
 - [ ] Sign, add text and images, redact, crop
 - [ ] PDF/A, repair, compare

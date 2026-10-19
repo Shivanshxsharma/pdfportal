@@ -5,9 +5,17 @@ as JSON on stdin, events read back from stdout), on PDFs and images made on
 the fly in a temporary folder. Run with:
 
     .venv\\Scripts\\python -m pytest -q
+
+To test the frozen engine that ships in the installer instead, point
+PORTAL_ENGINE_EXE at it. It then runs with a bare environment (no Python on
+PATH, no PYTHON* variables), the way it would on a computer without Python:
+
+    set PORTAL_ENGINE_EXE=dist\\pdfportal-engine\\pdfportal-engine.exe
+    .venv\\Scripts\\python -m pytest -q
 """
 
 import json
+import os
 import random
 import subprocess
 import sys
@@ -17,17 +25,35 @@ import pymupdf
 import pytest
 
 ENGINE_DIR = Path(__file__).resolve().parents[1]
+FROZEN = os.environ.get("PORTAL_ENGINE_EXE")
+
+
+def engine_command():
+    """How to start the engine: the frozen exe (with a bare environment),
+    or this Python running the package."""
+    if FROZEN:
+        windows = os.environ.get("SystemRoot", r"C:\Windows")
+        bare = {
+            "SystemRoot": windows,
+            "PATH": os.path.join(windows, "System32"),
+            "TEMP": os.environ.get("TEMP", ""),
+            "TMP": os.environ.get("TMP", ""),
+        }
+        return [str(Path(FROZEN).resolve())], bare
+    return [sys.executable, "-m", "portal_engine"], None
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 def run_engine(tool, inputs, options=None, fallback_dir=""):
     request = {"tool": tool, "inputs": [str(p) for p in inputs], "options": options or {}, "fallback_dir": str(fallback_dir)}
+    command, env = engine_command()
     proc = subprocess.run(
-        [sys.executable, "-m", "portal_engine"],
+        command,
         input=json.dumps(request).encode("utf-8"),
         capture_output=True,
         cwd=ENGINE_DIR,
+        env=env,
         timeout=120,
     )
     events = [json.loads(line) for line in proc.stdout.decode("ascii").splitlines() if line.strip()]
