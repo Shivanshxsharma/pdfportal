@@ -1,0 +1,99 @@
+# Builds PDFportal's Windows installer on GitHub's servers.
+#
+#   Push a version tag (git tag v0.2.0 && git push origin v0.2.0):
+#     builds, tests, and attaches PDFportal-Setup.exe to that release
+#     (creating it as a draft to review and publish, if it doesn't exist yet).
+#   Actions tab -> Release -> Run workflow:
+#     a test build; the installer is kept as a downloadable artifact only.
+#
+# It runs the same scripts/build-installer.ps1 as `npm run installer` on a
+# PC: freeze the PDF engine, test the frozen engine (no Python on PATH),
+# build the app and its NSIS installer, print the SHA-256. Because every
+# release is built here, from the public code, with a public log, a signing
+# service (SignPath Foundation) can verify what it signs.
+
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write   # only to attach the installer to a release
+
+jobs:
+  installer:
+    name: Build the Windows installer
+    runs-on: windows-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Node.js (the Tauri command line)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Python (the PDF engine)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Rust (the app)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Reuse compiled Rust crates from earlier runs
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install the build tools
+        shell: pwsh
+        run: |
+          npm ci
+          python -m venv engine\.venv
+          engine\.venv\Scripts\python -m pip install --quiet -r engine\requirements.txt
+
+      - name: Build and test the installer
+        shell: pwsh
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-installer.ps1
+
+      - name: Write the checksum
+        id: checksum
+        shell: pwsh
+        run: |
+          $setup = 'src-tauri\target\release\bundle\nsis\PDFportal-Setup.exe'
+          $hash = (Get-FileHash $setup -Algorithm SHA256).Hash.ToLower()
+          "$hash  PDFportal-Setup.exe" | Out-File -Encoding ascii "$setup.sha256"
+          "sha256=$hash" >> $env:GITHUB_OUTPUT
+          "### PDFportal-Setup.exe`nSHA-256: ``$hash``" >> $env:GITHUB_STEP_SUMMARY
+
+      - name: Keep the installer with this run
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDFportal-Setup
+          path: |
+            src-tauri/target/release/bundle/nsis/PDFportal-Setup.exe
+            src-tauri/target/release/bundle/nsis/PDFportal-Setup.exe.sha256
+          if-no-files-found: error
+
+      - name: Attach it to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          SHA256: ${{ steps.checksum.outputs.sha256 }}
+        run: |
+          $setup = 'src-tauri\target\release\bundle\nsis\PDFportal-Setup.exe'
+          gh release view $env:TAG *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $env:TAG $setup --clobber
+          } else {
+            $notes = "Built by GitHub Actions from $env:TAG ($env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID).`n`nSHA-256 ``$env:SHA256``  PDFportal-Setup.exe"
+            gh release create $env:TAG $setup --draft --title "PDFportal $($env:TAG.TrimStart('v'))" --notes $notes
+          }

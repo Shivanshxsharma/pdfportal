@@ -188,6 +188,41 @@ moves your mouse for a few seconds, so hands off while it runs.
 
 <br>
 
+## Privacy
+
+PDFportal doesn't collect, store or send any data about you or your files.
+It has no accounts, no analytics and no tracking, and the app itself never
+connects to the internet: your files are read and written only on your own
+computer, next to the originals.
+
+The one exception is the installer. On a PC that lacks Microsoft's WebView2
+component (which Windows 10 and 11 normally include), it downloads WebView2
+from Microsoft while you install.
+
+<br>
+
+## Code signing policy
+
+Windows releases are built from this repository by
+[GitHub Actions](https://github.com/Shivanshxsharma/pdfportal/actions/workflows/release.yml),
+on GitHub's own servers, from the code you can read here. Every build's log
+is public. Nothing is built or changed on a personal computer before release.
+
+Code signing: free code signing provided by [SignPath.io](https://about.signpath.io),
+certificate by [SignPath Foundation](https://signpath.org). *We've applied
+for it (October 2026); until it's approved, releases are unsigned.*
+
+| Role | Who |
+|---|---|
+| Committers and reviewers | [Shivansh Sharma](https://github.com/Shivanshxsharma) |
+| Approvers (release signing) | [Shivansh Sharma](https://github.com/Shivanshxsharma) |
+
+This program will not transfer any information to other networked systems
+unless specifically requested by the user or the person installing or
+operating it (see [Privacy](#privacy)).
+
+<br>
+
 ## License
 
 PDFportal is free software under the
